@@ -1,59 +1,99 @@
-
 # 📱 Android-Based Teledermatology App for Skin Lesion Classification
 
-This project is a **deep learning-powered Android application** for classifying **dermoscopic skin lesion images**, focused on assisting early detection of skin cancer. The application leverages the power of **Convolutional Neural Networks (CNN)** and is built upon the **Xception** architecture, achieving a peak accuracy of **92.95%** on the HAM10000 dataset.
-
-> ✅ Designed for remote teledermatology  
-> ✅ Powered by TensorFlow & Keras  
-> ✅ Implements Transfer Learning with fine-tuning  
-> ✅ Deployed as a lightweight `.tflite` model in Android  
+This project presents an **Android mobile application** for classifying **skin lesions** using **deep learning and dermoscopic images**. Built upon **pre-trained CNN models**, the app provides an accessible teledermatology solution, especially beneficial in areas with limited dermatological services. The core model achieves a top accuracy of **92.95%** using the **Xception** architecture.
 
 ---
 
-## 🔬 Motivation
+## 🔍 Overview
 
-Skin cancer ranks as the third most diagnosed cancer in Indonesia. However, limited access to dermatologists—especially in rural areas—makes **early detection** difficult. This project aims to:
-- Bring **automated classification** of skin lesions to mobile devices
-- Bridge the urban–rural healthcare gap via **teledermatology**
-- Experiment and evaluate **CNN pre-trained models** for medical image classification
+Skin cancer remains one of the most prevalent types of cancer globally and ranks third in Indonesia after cervical and breast cancers. Despite its high curability at early stages, lack of dermatologists in rural areas causes delayed diagnosis. This project seeks to mitigate that gap by developing:
 
----
-
-## 📊 Dataset
-
-**HAM10000** – a public dataset containing **10,015 dermoscopic images** spanning **7 classes of skin lesions**:
-- Melanocytic nevi (nv)
-- Melanoma (mel)
-- Benign keratosis (bkl)
-- Basal cell carcinoma (bcc)
-- Actinic keratoses (akiec)
-- Vascular lesions (vasc)
-- Dermatofibroma (df)
-
-**Preprocessing & Augmentation**:
-- Image size standardized to **224x224**
-- Duplicate images removed (resulting in 5,514 clean samples)
-- Dataset split: **80/10/10** for train/validation/test
-- Augmentation used to handle class imbalance: rotation, scaling, flipping, shifting
+- A **CNN-based classification system** using dermoscopic imagery
+- An **Android app** that enables real-time lesion classification using gallery or camera input
+- A **training pipeline** for evaluating CNN architectures using transfer learning and hyperparameter optimization
 
 ---
 
-## 🧠 Models Compared
+## 📦 Dataset: HAM10000
 
-| Model         | Peak Accuracy | F1 Score |
-|---------------|---------------|----------|
-| MobileNetV2   | 90.10%        | 0.703    |
-| ResNet50V2    | 90.04%        | 0.737    |
-| DenseNet121   | 92.33%        | 0.793    |
-| InceptionV3   | 91.08%        | 0.757    |
-| **Xception**  | **92.95%**    | **0.803**|
+The **HAM10000 ("Human Against Machine with 10000 training images")** dataset consists of 10,015 dermoscopic images across 7 skin lesion categories. It includes both benign and malignant lesion types:
 
-Hyperparameters tuned:
-- **Learning Rate:** 0.001 vs 0.0001
-- **Optimizers:** Adam, RMSprop, Nadam, SGD
-- **Batch Sizes:** 16, 32, 64, 128
-- **Dropout Rates:** 0.3 to 0.6  
-- **Training Types:** Single-phase vs Two-phase (transfer learning + fine-tuning)
+| Class ID | Full Name                   | Description                           |
+|----------|-----------------------------|---------------------------------------|
+| nv       | Melanocytic nevi            | Common moles                          |
+| mel      | Melanoma                    | Malignant tumor of melanocytes        |
+| bkl      | Benign keratosis-like       | Includes seborrheic keratoses         |
+| bcc      | Basal cell carcinoma        | Common, slow-growing skin cancer      |
+| akiec    | Actinic keratoses           | Precancerous areas                    |
+| vasc     | Vascular lesions            | Includes angiomas                     |
+| df       | Dermatofibroma              | Benign skin growth                    |
+
+---
+
+## 🧹 Data Preprocessing Steps
+
+1. **Cleaning**: Removed 4,501 duplicated images to ensure clean dataset of 5,514 samples.
+2. **Splitting**: Used an 80:10:10 split (train:val:test) with care to avoid duplicates in val/test.
+3. **Augmentation**: Balanced the dataset via:
+   - Rotation (±180°)
+   - Shifting (±10%)
+   - Flipping (H/V)
+   - Zooming (±10%)
+   - Nearest fill method
+4. **Resizing**: All images resized to **224x224** and normalized according to each model’s input requirements.
+
+---
+
+## 🧠 Deep Learning Models
+
+We evaluated 5 popular CNN architectures, all sourced from Keras Applications:
+
+- `MobileNetV2`
+- `ResNet50V2`
+- `DenseNet121`
+- `InceptionV3`
+- `Xception`
+
+Each model underwent:
+- Base layer freezing (transfer learning)
+- Fine-tuning with additional layers: GlobalAveragePooling2D, BatchNormalization, Dropout, Dense (Softmax)
+- Conversion to `.tflite` format for Android compatibility
+
+---
+
+## ⚙️ Hyperparameter Tuning
+
+We tested each model with combinations of:
+
+| Hyperparameter | Tested Values                           |
+|----------------|------------------------------------------|
+| Learning Rate  | 0.001, 0.0001                            |
+| Optimizers     | Adam, RMSprop, Nadam, SGD                |
+| Batch Size     | 16, 32, 64, 128                          |
+| Dropout Rate   | 0.3, 0.4, 0.5, 0.6                       |
+| Training Type  | Single-step (unfreeze all), Two-step     |
+
+Best performance came from:
+
+- **Xception**
+- Learning Rate = 0.001 / 0.0001 (two-phase)
+- Optimizer = Adam
+- Batch Size = 64
+- Dropout = 0.5
+
+---
+
+## 📈 Results Summary
+
+| Model         | Accuracy | F1 Score |
+|---------------|----------|----------|
+| MobileNetV2   | 90.10%   | 0.703    |
+| ResNet50V2    | 90.04%   | 0.737    |
+| DenseNet121   | 92.33%   | 0.793    |
+| InceptionV3   | 91.08%   | 0.757    |
+| **Xception**  | **92.95%** | **0.803**  |
+
+Notably, performance on classes like 'mel' (melanoma) lagged due to complexity despite data size. 'df' and 'vasc' classes—though smaller—showed higher F1-scores thanks to simpler image structures.
 
 ---
 
@@ -61,6 +101,13 @@ Hyperparameters tuned:
 
 The best-performing model (**Xception**) was converted into a `.tflite` format and deployed into an Android app via **Android Studio**.
 
+- Developed with **Android Studio**
+- Imports `.tflite` model via **TensorFlow Lite**
+- Supports:
+  - Real-time camera predictions
+  - Static image upload via gallery
+- Implements same preprocessing pipeline as training
+  
 App Features:
 - Real-time lesion prediction via camera or gallery
 - Clean UI with class-wise prediction output
@@ -82,28 +129,44 @@ App Features:
 
 ## 🚀 How to Run
 
-1. Clone this repo
-2. Use Google Colab or a local Jupyter Notebook to:
-   - Load and preprocess the HAM10000 dataset
-   - Train and evaluate models
-   - Export `.tflite` using `tf.lite.TFLiteConverter`
-3. Open Android Studio
-   - Import the `.tflite` model
-   - Implement preprocessing in Java/Kotlin
-   - Run on device/emulator
+1. **Clone the repository**
+2. **Train model in Colab**:
+   - Preprocess data
+   - Tune hyperparameters
+   - Save `.tflite` model
+3. **Open Android Studio**:
+   - Load project under `android_app/`
+   - Add `.tflite` to `assets/`
+   - Implement preprocessing & inference logic
+4. **Run on emulator or physical device**
 
 ---
 
-## 📈 Future Work
+## 🧩 Future Work
 
-- Improve performance on real-time camera input via image enhancement
-- Add lesion boundary segmentation before classification
-- Incorporate newer models like EfficientNetV2 or lightweight MobileNetV3
-- Build a REST API version for hospitals or clinics
+- Add **segmentation model** for lesion localization
+- Improve **real-time camera robustness** (auto-enhance)
+- Add **REST API** for remote diagnosis
+- Extend model with **EfficientNetV2** or **ConvNeXt**
 
 ---
 
-## 📜 License
+## 👥 Authors
 
-This project is open-sourced under the [MIT License](LICENSE).
+- **Faris Gymnastiar** – Developer & Researcher  
+- **Yoyok Prasetyo**, **Ahmad Yulianto** – Academic Supervisors  
+Digital Telecommunication Network, Electronic Engineering Dept, Polinema, Indonesia
 
+---
+
+## 📄 License
+
+Licensed under the [MIT License](LICENSE).
+
+---
+
+## 💬 Acknowledgments
+
+Special thanks to:
+- Keras & TensorFlow communities
+- HAM10000 dataset creators
