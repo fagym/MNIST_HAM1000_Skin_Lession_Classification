@@ -94,19 +94,6 @@ App Features:
 
 ---
 
-## 📁 Repository Structure
-
-```
-📂 teledermatology-app/
-├── 📁 dataset/              # Cleaned & augmented images (optional)
-├── 📁 models/               # Trained models (.h5 and .tflite)
-├── 📁 android_app/          # Android Studio project
-├── 📄 model_training.ipynb  # Google Colab notebook
-├── 📄 README.md             # This file
-```
-
----
-
 ## 📈 Future Work
 
 - Improve performance on real-time camera input via image enhancement
