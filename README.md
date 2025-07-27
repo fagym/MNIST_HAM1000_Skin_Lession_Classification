@@ -113,7 +113,7 @@ App Features:
 - Clean UI with class-wise prediction output
 - Lightweight and optimized for mobile usage
 
-> ⚠️ Notable finding: The app maintains high accuracy with gallery images but sees accuracy drops (up to 23%) with live camera captures due to noise, lighting, and resolution variances.
+Notable finding: The app maintains high accuracy with gallery images but sees accuracy drops (up to 23%) with live camera captures due to noise, lighting, and resolution variances.
 
 ---
 
@@ -155,13 +155,13 @@ App Features:
 
 - **Faris Gymnastiar** – Developer & Researcher  
 - **Yoyok Prasetyo**, **Ahmad Yulianto** – Academic Supervisors  
-Digital Telecommunication Network, Electronic Engineering Dept, Polinema, Indonesia
+Digital Telecommunication Network, Electronic Engineering Dept, Politeknik Negeri Malang, Indonesia
 
 ---
 
 ## 📄 License
 
-Licensed under the [MIT License](LICENSE).
+This project is open-sourced under the [MIT License](https://github.com/fagym/MNIST_HAM1000_Skin_Lession_Classification/blob/main/LICENSE.md).
 
 ---
 
